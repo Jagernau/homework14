@@ -33,7 +33,7 @@ def film_from_detween_years():
 @app.route("/rating/children")#3
 def films_children():
     """страница с детскими фильмами"""
-    child_film = utils.get_rating('G')
+    child_film = utils.get_rating("G", "PG")
     return jsonify(child_film)
 
 if __name__ == "__main__":

@@ -85,6 +85,8 @@ def get_rating(*ratings):
         WHERE {name[5]} IN {ratings}
         AND type = 'Movie'
     """
+    if len(ratings) < 2:
+        arg.replace("IN {ratings}", "= '{ratings[0]}'")
     cur.execute(arg)
     films = cur.fetchall()
     js = []
@@ -93,5 +95,34 @@ def get_rating(*ratings):
             js.append({name[0]:i[0], name[5]:i[1], name[4]:i[2]})
         return js
     return js
+
+
+#шаг 5 функция с 2 актёрами
+def get_actors(one_actor,two_actor):
+    cur = get_db()
+    arg = f"""
+        SELECT DISTINCT netflix.cast
+        FROM 'netflix'
+        WHERE netflix.cast LIKE '%{one_actor}%{two_actor}%'
+
+    """
+    cur.execute(arg)
+    actors = cur.fetchall()
+    unic = set()
+    allin = list()
+    bro=list()
+    for i in actors:
+        actor = i[0].split(", ")
+        for x in actor:
+            unic.add(x)
+            allin.append(x)
+    for i in unic:
+        if allin.count(i) > 2 and i != one_actor and i != two_actor:
+            bro.append(i)
+
+    return bro
     
-print(get_rating("G","PG"))
+
+print(get_actors("Rose McIver", "Ben Lamb"))
+
+

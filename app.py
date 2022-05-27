@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 import utils
 
 
@@ -24,9 +24,17 @@ def film_from_genre(genre):
 @app.route("/movie/year/to/year")#2
 def film_from_detween_years():
     """страницы фильмов между годами"""
-    year_to_year = utils.get_years(1940, 1945)
+    first = request.args.get("first")
+    last = request.args.get("last")
+    year_to_year = utils.get_years(first,last)
     return jsonify(year_to_year)
 
+
+@app.route("/rating/children")#3
+def films_children():
+    """страница с детскими фильмами"""
+    child_film = utils.get_rating('G')
+    return jsonify(child_film)
 
 if __name__ == "__main__":
     app.run()

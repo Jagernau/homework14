@@ -33,7 +33,7 @@ def film_from_detween_years():
 
 @app.route("/rating/<choice>")#3
 def films_children(choice):
-    """страница с детскими фильмами"""
+    """страница с фильмами по рейтину"""
     film = []
     if choice == "children":
         film = utils.get_rating("G")

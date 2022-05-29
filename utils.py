@@ -38,7 +38,7 @@ def get_genre(genre):
         SELECT {name[0]}, {name[4]}
         FROM 'netflix'
         WHERE type = 'Movie'
-        AND listed_in = '{str(genre)}' OR listed_in = '{str(genre)}%'
+        AND listed_in = '{str(genre)}' OR listed_in LIKE '{str(genre)}%'
         ORDER BY release_year DESC
         LIMIT 10
     """
@@ -103,8 +103,8 @@ def get_rating(*ratings):
         for i in films:
             js.append({name[0]:i[0], name[5]:i[1], name[4]:i[2]})
         return js
-    return films
-print(get_rating("G"))
+    return js
+
 
 #шаг 5 функция с 2 актёрами
 def get_actors(one_actor,two_actor):

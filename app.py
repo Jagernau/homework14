@@ -4,6 +4,7 @@ import utils
 
 app = Flask(__name__)
 app.config['JSON_SORT_KEYS'] = False
+app.config['JSON_AS_ASCII'] = False
 
 
 #вьюшки
@@ -38,6 +39,9 @@ def films_children(choice):
         film = utils.get_rating("G")
     if choice == "family":
         film = utils.get_rating("G", "PG", "PG-13")
+    if choice == "adult":
+        film = utils.get_rating("R", "NC-17")
+        
     return jsonify(film)
 
 if __name__ == "__main__":

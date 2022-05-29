@@ -1,4 +1,5 @@
 import sqlite3
+from json import dumps
 
 name = ['title', 'country', 'release_year', 'listed_in', 'description', 'rating']
 
@@ -78,15 +79,23 @@ def get_years(first,last):
 
 def get_rating(*ratings):
     """выводит фильмы по рейтингу"""
+    rat = len(ratings)
     cur = get_db()
-    arg = f"""
-        SELECT {name[0]}, {name[5]}, {name[4]}
-        FROM 'netflix'
-        WHERE {name[5]} IN {ratings}
-        AND type = 'Movie'
-    """
-    if len(ratings) < 2:
-        arg.replace("IN {ratings}", "= '{ratings[0]}'")
+    if rat > 1:
+        arg = f"""
+            SELECT {name[0]}, {name[5]}, {name[4]}
+            FROM 'netflix'
+            WHERE {name[5]} IN {ratings}
+            AND type = 'Movie'
+        """
+    else:
+        arg = f"""
+            SELECT {name[0]}, {name[5]}, {name[4]}
+            FROM 'netflix'
+            WHERE {name[5]} = '{ratings[0]}'
+            AND type = 'Movie'
+        """
+            
     cur.execute(arg)
     films = cur.fetchall()
     js = []
@@ -94,8 +103,8 @@ def get_rating(*ratings):
         for i in films:
             js.append({name[0]:i[0], name[5]:i[1], name[4]:i[2]})
         return js
-    return js
-
+    return films
+print(get_rating("G"))
 
 #шаг 5 функция с 2 актёрами
 def get_actors(one_actor,two_actor):
@@ -119,10 +128,31 @@ def get_actors(one_actor,two_actor):
     for i in unic:
         if allin.count(i) > 2 and i != one_actor and i != two_actor:
             bro.append(i)
-
     return bro
     
+#print(get_actors("Rose McIver", "Ben Lamb"))
 
-print(get_actors("Rose McIver", "Ben Lamb"))
+
+#шаг 6 функция принимающая 3и аргумента тип, год, жанр
+def sorting(type_, year_, genre_):
+    """функция возвращает фильмы по типу году и жанру в json"""
+    cur = get_db()
+    arg = f"""
+        SELECT {name[0]}, {name[4]} 
+        FROM 'netflix'
+        WHERE type = '{type_}' AND release_year = '{year_}' AND listed_in = '{genre_}'
+
+    """
+    cur.execute(arg)
+    result = cur.fetchall()
+    films = []
+    if len(result) > 0:
+        for i in result:
+            films.append({name[0]: i[0], name[4]: i[1].rstrip("\n")})
+        return dumps(films, indent=3)
+    return dumps(films, indent=3)
+
+#print(sorting("Movie", 1980, "Dramas"))
+
 
 

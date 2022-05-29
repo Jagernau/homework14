@@ -30,11 +30,15 @@ def film_from_detween_years():
     return jsonify(year_to_year)
 
 
-@app.route("/rating/children")#3
-def films_children():
+@app.route("/rating/<choice>")#3
+def films_children(choice):
     """страница с детскими фильмами"""
-    child_film = utils.get_rating("G", "PG")
-    return jsonify(child_film)
+    film = []
+    if choice == "children":
+        film = utils.get_rating("G")
+    if choice == "family":
+        film = utils.get_rating("G", "PG", "PG-13")
+    return jsonify(film)
 
 if __name__ == "__main__":
     app.run()
